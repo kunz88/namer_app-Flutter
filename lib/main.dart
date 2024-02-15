@@ -32,6 +32,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+// classe degli stati, qui registriamo tutti i cambiamenti nel contenuto dell'app
 class MyAppState extends ChangeNotifier {
   // change notifier si occupa di notificare tutto il sistema di un avvenuto cambiamento di stato
   var current = WordPair
@@ -55,7 +57,10 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 }
-// ...
+
+
+
+
 
 class MyHomePage extends StatefulWidget {
   // converto la pagina in uno statefull widget
@@ -63,6 +68,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+
+// classe pagina principale , qui abbiamo tutto lo scaffold con il contenuto
 class _MyHomePageState extends State<MyHomePage> {
   // adesso la pagina stessa ha uno stato accessibile ed un costruttore
   // creo adesso la homepage della pagina da generare
@@ -77,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage(); // costruttore della classe GeneratorPage
         break;
       case 1:
-        page = Placeholder();
+        page = FavoritesPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -131,7 +138,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-// eccoci arrivato alla pagina generata con il current value card e i due bottoni
+
+
+// eccoci arrivato alla pagina generata con il current value card e i due bottoni,sezione della homepage
 class GeneratorPage extends StatelessWidget {
   // sempre un widget
   @override
@@ -196,6 +205,8 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
+
+// sezione di generatedPage, nello specifico la classe che si occupa di generare la card con dentro il contenuto di current
 class BigCard extends StatelessWidget {
   const BigCard({
     super.key,
@@ -228,5 +239,35 @@ class BigCard extends StatelessWidget {
               style: style) // applichiamo lo stile al testo,
           ),
     ); // l'oggetto appState ha una membro current, che noi salviamo dentro pair (ricordiamo che contiane la parola random) che renderizziamo lowercase
+  }
+}
+
+
+// pagina con tutte le parole preferite
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
+    if (appState.favorites.isEmpty) {
+      return Center(
+        child: Text('No favorites yet.'),
+      );
+    }
+
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text('You have '
+              '${appState.favorites.length} favorites:'),
+        ),
+        for (var pair in appState.favorites)
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text(pair.asLowerCase),
+          ),
+      ],
+    );
   }
 }
